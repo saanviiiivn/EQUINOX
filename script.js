@@ -97,30 +97,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ------------------------------------------------------------------------
-  // C. Slide-out Navigation Drawer
+  // C. Slide-out Navigation Drawer (Robust Pure-CSS Open/Close)
   // ------------------------------------------------------------------------
   const menuBtn = document.getElementById('menu-btn');
   const drawer = document.getElementById('drawer');
   const drawerBackdrop = document.getElementById('drawer-backdrop');
-  const drawerPanel = document.getElementById('drawer-panel');
   const closeDrawerBtn = document.getElementById('close-drawer');
 
   function openDrawer() {
-    if (!drawer || !drawerPanel) return;
-    drawer.classList.remove('pointer-events-none', 'opacity-0');
-    drawer.classList.add('opacity-100');
-    drawerPanel.classList.remove('-translate-x-full');
-    drawerPanel.classList.add('translate-x-0');
+    if (drawer) {
+      drawer.classList.add('open');
+    }
   }
 
   function closeDrawer() {
-    if (!drawer || !drawerPanel) return;
-    drawer.classList.add('opacity-0');
-    drawerPanel.classList.remove('translate-x-0');
-    drawerPanel.classList.add('-translate-x-full');
-    setTimeout(() => {
-      drawer.classList.add('pointer-events-none');
-    }, 300);
+    if (drawer) {
+      drawer.classList.remove('open');
+    }
   }
 
   if (menuBtn) menuBtn.addEventListener('click', openDrawer);
@@ -187,7 +180,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ------------------------------------------------------------------------
-  // E. Cosmic Ambiance Synthesizer (Binaural Drone Generator)
+  // E. News Feed Filter Buttons (ALL FEEDS, JWST, EXOPLANETS, ASTROBIOLOGY)
+  // ------------------------------------------------------------------------
+  const feedButtons = document.querySelectorAll('.feed-btn');
+  const articles = document.querySelectorAll('#cosmic-news article, #cosmic-news [data-category]');
+
+  feedButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      feedButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.getAttribute('data-filter');
+      articles.forEach((art) => {
+        const cat = art.getAttribute('data-category');
+        if (filter === 'all' || !cat || cat.includes(filter)) {
+          art.style.display = '';
+        } else {
+          art.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // ------------------------------------------------------------------------
+  // F. Cosmic Ambiance Synthesizer (Binaural Drone Generator)
   // ------------------------------------------------------------------------
   const audioBtn = document.getElementById('audio-toggle');
   const audioIcon = document.getElementById('audio-icon');
@@ -288,27 +304,28 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================================================
 function handleQuizAnswer(button, isCorrect) {
   const feedback = document.getElementById('quiz-feedback');
-  if (!feedback) return;
-
-  feedback.classList.remove('hidden');
-
-  // Reset sibling button states
   const container = button.closest('.space-y-1\\.5') || button.parentElement;
+
   if (container) {
-    const siblingBtns = container.querySelectorAll('button');
-    siblingBtns.forEach((btn) => {
-      btn.className = 'w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-xs font-mono';
+    container.querySelectorAll('.quiz-option').forEach((btn) => {
+      btn.classList.remove('correct', 'wrong');
     });
   }
 
   if (isCorrect) {
-    button.className = 'w-full text-left p-2 rounded-lg bg-emerald-500/30 border border-emerald-400 text-emerald-200 transition-colors text-xs font-mono font-semibold';
-    feedback.className = 'text-[11px] font-mono text-emerald-400 pt-1 font-semibold';
-    feedback.textContent = '✓ Correct! Pauli exclusion principle prevents electron collapse up to the Chandrasekhar limit (~1.44 M☉).';
+    button.classList.add('correct');
+    if (feedback) {
+      feedback.className = 'text-[11px] font-mono text-emerald-400 pt-1 font-semibold';
+      feedback.textContent = '✓ Correct! Pauli exclusion principle prevents electron collapse up to the Chandrasekhar limit (~1.44 M☉).';
+      feedback.classList.remove('hidden');
+    }
   } else {
-    button.className = 'w-full text-left p-2 rounded-lg bg-rose-500/30 border border-rose-400 text-rose-200 transition-colors text-xs font-mono';
-    feedback.className = 'text-[11px] font-mono text-rose-400 pt-1';
-    feedback.textContent = '✕ Incorrect. Quantum electron degeneracy pressure counteracts gravitational collapse.';
+    button.classList.add('wrong');
+    if (feedback) {
+      feedback.className = 'text-[11px] font-mono text-rose-400 pt-1';
+      feedback.textContent = '✕ Incorrect. Quantum electron degeneracy pressure counteracts gravitational collapse.';
+      feedback.classList.remove('hidden');
+    }
   }
 }
 
