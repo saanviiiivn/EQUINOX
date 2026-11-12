@@ -11,15 +11,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 
-  <!-- Tailwind CSS Play CDN & Config -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <!-- Tailwind Configuration (MUST be placed BEFORE Tailwind CDN script) -->
   <script>
-    tailwind.config = {
+    window.tailwind = {
       darkMode: "class",
       theme: {
         extend: {
           colors: {
-            primary: "#38bdf8", // Celestial cyan
+            primary: "#38bdf8",
             "background-light": "#f1f5f9",
             "background-dark": "#030712",
           },
@@ -38,7 +37,7 @@
           keyframes: {
             pulseGlow: {
               '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
-              '50%': { opacity: '0.8', transform: 'scale(1.05)' },
+              '50%': { opacity: '0.85', transform: 'scale(1.05)' },
             },
             float: {
               '0%, 100%': { transform: 'translateY(0px)' },
@@ -53,6 +52,8 @@
       },
     };
   </script>
+  <!-- Tailwind Play CDN (No external plugins to prevent file:// protocol CORS errors) -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="style.css"/>
@@ -63,7 +64,7 @@
   <header class="fixed top-0 inset-x-0 z-40 transition-all duration-300 px-4 py-3 bg-white/70 dark:bg-black/60 backdrop-blur-md border-b border-slate-200/60 dark:border-white/10">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <button aria-label="Open Navigation Menu" class="p-2 rounded-full hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors flex items-center justify-center" id="menu-btn">
+        <button aria-label="Open Navigation Menu" class="p-2 rounded-full hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors flex items-center justify-center cursor-pointer" id="menu-btn">
           <span class="material-symbols-outlined text-[26px]">menu</span>
         </button>
         <div class="flex items-center gap-2">
@@ -84,15 +85,15 @@
         </div>
       </a>
       <div class="flex items-center gap-1 sm:gap-2">
-        <button aria-label="Search Cosmos" class="p-2 rounded-full hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors flex items-center justify-center" id="search-trigger">
+        <button aria-label="Search Cosmos" class="p-2 rounded-full hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors flex items-center justify-center cursor-pointer" id="search-trigger">
           <span class="material-symbols-outlined text-[22px]">search</span>
         </button>
-        <button aria-label="Toggle Cosmic Ambiance" class="hidden sm:flex p-2 rounded-full hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors items-center justify-center" id="audio-toggle">
+        <button aria-label="Toggle Cosmic Ambiance" class="hidden sm:flex p-2 rounded-full hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors items-center justify-center cursor-pointer" id="audio-toggle">
           <span class="material-symbols-outlined text-[22px]" id="audio-icon">volume_off</span>
         </button>
-        <button aria-label="Toggle Dark / Light Theme" class="p-2 rounded-full hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors flex items-center justify-center" id="theme-btn">
-          <span class="material-symbols-outlined text-[22px] dark:hidden">dark_mode</span>
-          <span class="material-symbols-outlined text-[22px] hidden dark:inline">light_mode</span>
+        <button aria-label="Toggle Dark / Light Theme" class="p-2 rounded-full hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors flex items-center justify-center cursor-pointer" id="theme-btn">
+          <span class="material-symbols-outlined text-[22px] theme-icon-dark">dark_mode</span>
+          <span class="material-symbols-outlined text-[22px] theme-icon-light">light_mode</span>
         </button>
       </div>
     </div>
@@ -100,7 +101,7 @@
 
   <!-- ==================== SIDE DRAWER ==================== -->
   <aside class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0" id="drawer">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="drawer-backdrop"></div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer" id="drawer-backdrop"></div>
     <div class="absolute top-0 bottom-0 left-0 w-80 max-w-[85vw] bg-white dark:bg-slate-950 p-6 flex flex-col justify-between transform -translate-x-full transition-transform duration-300 ease-out border-r border-slate-200 dark:border-white/10 shadow-2xl" id="drawer-panel">
       <div class="space-y-6">
         <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
@@ -108,7 +109,7 @@
             <span class="material-symbols-outlined text-primary text-2xl">language</span>
             <span class="font-display font-bold tracking-widest text-slate-900 dark:text-white">EQUINOX ATLAS</span>
           </div>
-          <button class="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white" id="close-drawer">
+          <button class="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer" id="close-drawer">
             <span class="material-symbols-outlined">close</span>
           </button>
         </div>
@@ -128,10 +129,6 @@
           <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#deep-space">
             <span class="material-symbols-outlined text-primary text-xl">blur_on</span>
             <span class="text-sm font-medium">Deep Space &amp; Galaxies</span>
-          </a>
-          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#missions">
-            <span class="material-symbols-outlined text-primary text-xl">rocket_launch</span>
-            <span class="text-sm font-medium">Missions &amp; Telemetry</span>
           </a>
           <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#space-quiz">
             <span class="material-symbols-outlined text-primary text-xl">help</span>
@@ -160,7 +157,7 @@
       <div class="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
         <span class="material-symbols-outlined text-primary">search</span>
         <input class="w-full bg-transparent outline-none text-slate-900 dark:text-white placeholder:text-slate-400 text-base" id="search-input" placeholder="Search planets, James Webb, black holes..." type="text"/>
-        <button class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs font-mono px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded" id="close-search">ESC</button>
+        <button class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs font-mono px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded cursor-pointer" id="close-search">ESC</button>
       </div>
       <div class="max-h-64 overflow-y-auto space-y-2 py-1" id="search-results">
         <a class="flex items-center justify-between p-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors" href="#solar-system">
@@ -200,7 +197,10 @@
   <!-- ==================== HERO SECTION ==================== -->
   <section class="relative min-h-screen flex flex-col justify-between items-center text-center overflow-hidden pt-28 pb-12 px-4" id="hero">
     <div class="absolute inset-0 -z-20 overflow-hidden bg-black">
-      <img alt="Equinox ultra high resolution cinematic Earth curved horizon viewed from orbit with luminous blue atmosphere" class="w-full h-full object-cover object-top filter brightness-[0.9] contrast-[1.1] animate-kenburns select-none pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEMMJ2It6A_05J4mcCSCryU0WOa0xgasZ3oyXq1TamLXlmgCMuW2K4pkJKaopa4aF7n22wyvzMYnX88trJHzlLEk5JbDT9lNyBR_DIuOMHRanUkF_QABSlGEFyFEwMhld_mAkrtjbd51l1vV3rKCP3AvMVZNcsuBEJykymrpVCY0qtJIvp_XsGNFyyXJxKDGTKctShX5SfREtnFIhwr4h1HIbW0l4l4u0rgLx6yAc"/>
+      <img alt="Equinox Earth Horizon" 
+           src="earth-horizon.jpg" 
+           onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuCEMMJ2It6A_05J4mcCSCryU0WOa0xgasZ3oyXq1TamLXlmgCMuW2K4pkJKaopa4aF7n22wyvzMYnX88trJHzlLEk5JbDT9lNyBR_DIuOMHRanUkF_QABSlGEFyFEwMhld_mAkrtjbd51l1vV3rKCP3AvMVZNcsuBEJykymrpVCY0qtJIvp_XsGNFyyXJxKDGTKctShX5SfREtnFIhwr4h1HIbW0l4l4u0rgLx6yAc';"
+           class="w-full h-full object-cover object-top filter brightness-[0.9] contrast-[1.1] animate-kenburns select-none pointer-events-none"/>
       <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black pointer-events-none"></div>
       <div class="absolute inset-0 cosmic-radial-glow mix-blend-screen pointer-events-none"></div>
       <div class="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent pointer-events-none"></div>
@@ -235,22 +235,22 @@
       </div>
     </div>
 
-    <!-- Quick Telemetry Bar -->
+    <!-- Quick Telemetry Stats -->
     <div class="w-full max-w-5xl mx-auto flex flex-col items-center gap-6 mt-12">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 w-full px-4">
-        <div class="glass-dark dark:bg-black/40 rounded-xl p-3 text-center border border-white/10">
+        <div class="glass-dark rounded-xl p-3 text-center border border-white/10">
           <span class="block text-[10px] font-mono text-sky-400 uppercase tracking-wider">Orbital Altitude</span>
           <span class="text-sm sm:text-base font-bold font-mono text-white">408.2 KM</span>
         </div>
-        <div class="glass-dark dark:bg-black/40 rounded-xl p-3 text-center border border-white/10">
+        <div class="glass-dark rounded-xl p-3 text-center border border-white/10">
           <span class="block text-[10px] font-mono text-sky-400 uppercase tracking-wider">Atmospheric Depth</span>
           <span class="text-sm sm:text-base font-bold font-mono text-white">100 KM (Kármán)</span>
         </div>
-        <div class="glass-dark dark:bg-black/40 rounded-xl p-3 text-center border border-white/10">
+        <div class="glass-dark rounded-xl p-3 text-center border border-white/10">
           <span class="block text-[10px] font-mono text-sky-400 uppercase tracking-wider">Earth Speed</span>
           <span class="text-sm sm:text-base font-bold font-mono text-white">107,000 KM/H</span>
         </div>
-        <div class="glass-dark dark:bg-black/40 rounded-xl p-3 text-center border border-white/10">
+        <div class="glass-dark rounded-xl p-3 text-center border border-white/10">
           <span class="block text-[10px] font-mono text-sky-400 uppercase tracking-wider">Known Exoplanets</span>
           <span class="text-sm sm:text-base font-bold font-mono text-white">5,502+ CONFIRMED</span>
         </div>
@@ -262,7 +262,7 @@
     </div>
   </section>
 
-  <!-- ==================== SOLAR SYSTEM OBSERVATORY ==================== -->
+  <!-- ==================== SOLAR SYSTEM EXPEDITION ==================== -->
   <section class="relative py-20 px-4 md:px-8 border-t border-slate-200 dark:border-white/5 bg-slate-100/50 dark:bg-slate-950/40" id="solar-system">
     <div class="max-w-7xl mx-auto space-y-10">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -360,7 +360,7 @@
     </div>
   </section>
 
-  <!-- ==================== THE COSMIC DAILY NEWS ==================== -->
+  <!-- ==================== THE COSMIC DAILY DISPATCH ==================== -->
   <section class="py-20 px-4 md:px-8 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-white/5" id="cosmic-news">
     <div class="max-w-7xl mx-auto space-y-10">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200 dark:border-slate-800">
@@ -380,7 +380,7 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Main Featured Article -->
+        <!-- Main News Feature -->
         <article class="lg:col-span-2 rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 flex flex-col justify-between group">
           <div class="relative h-72 sm:h-96 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent z-10"></div>
@@ -409,7 +409,7 @@
           </div>
         </article>
 
-        <!-- Right Side Alerts & Quiz -->
+        <!-- Right Alerts & Daily Astro Quiz -->
         <div class="space-y-6">
           <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 space-y-3">
             <div class="flex items-center justify-between">
@@ -445,7 +445,7 @@
             </div>
           </div>
 
-          <!-- Astro Quiz Card -->
+          <!-- Astro Quiz Box -->
           <div class="p-5 rounded-2xl bg-gradient-to-br from-sky-950 to-indigo-950 border border-sky-400/20 text-white space-y-3" id="space-quiz">
             <div class="flex items-center gap-2 text-xs font-mono text-sky-300">
               <span class="material-symbols-outlined text-base">quiz</span>
@@ -453,9 +453,9 @@
             </div>
             <p class="text-sm font-semibold">What prevents a White Dwarf star from collapsing further under gravity?</p>
             <div class="space-y-1.5 text-xs font-mono">
-              <button class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors" onclick="handleQuizAnswer(this, false)">A. Thermal photon gas pressure</button>
-              <button class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors" onclick="handleQuizAnswer(this, true)">B. Electron degeneracy pressure</button>
-              <button class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors" onclick="handleQuizAnswer(this, false)">C. Dark energy boundary</button>
+              <button class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors cursor-pointer" onclick="handleQuizAnswer(this, false)">A. Thermal photon gas pressure</button>
+              <button class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors cursor-pointer" onclick="handleQuizAnswer(this, true)">B. Electron degeneracy pressure</button>
+              <button class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors cursor-pointer" onclick="handleQuizAnswer(this, false)">C. Dark energy boundary</button>
             </div>
             <div class="text-[11px] font-mono hidden pt-1" id="quiz-feedback"></div>
           </div>
@@ -479,7 +479,7 @@
           Experience gravitational lensing, photon spheres, and intense spacetime warping calculated via Kerr-metric physics. Inspect the relativistic accretion disk spinning at 30% speed of light.
         </p>
         <div class="flex flex-wrap gap-4 pt-2">
-          <button class="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-display font-semibold text-xs tracking-wider uppercase transition-all shadow-lg shadow-purple-600/30 flex items-center gap-2">
+          <button class="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-display font-semibold text-xs tracking-wider uppercase transition-all shadow-lg shadow-purple-600/30 flex items-center gap-2 cursor-pointer">
             <span>LAUNCH GRAVITY SIM</span>
             <span class="material-symbols-outlined text-sm">cyclone</span>
           </button>

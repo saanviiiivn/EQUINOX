@@ -1,87 +1,104 @@
 /**
  * EQUINOX – The Cosmic Daily
- * Client-Side Interactive Controller
+ * Robust Client Controller & Audio Synthesizer
  */
 
-// ==========================================
-// 1. Theme Management (Dark / Light Mode)
-// ==========================================
-(function initTheme() {
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'light') {
+// ==========================================================================
+// 1. Theme Management (Early Execution to avoid layout flash)
+// ==========================================================================
+(function applyInitialTheme() {
+  const saved = localStorage.getItem('equinox_theme');
+  if (saved === 'light') {
     document.documentElement.classList.remove('dark');
-  } else if (savedTheme === 'dark') {
+  } else {
+    // Default to dark for cosmic experience
     document.documentElement.classList.add('dark');
   }
 })();
 
+// ==========================================================================
+// 2. DOM Ready Controller
+// ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
+  // ------------------------------------------------------------------------
+  // A. Theme Switcher Button
+  // ------------------------------------------------------------------------
   const themeBtn = document.getElementById('theme-btn');
   if (themeBtn) {
     themeBtn.addEventListener('click', () => {
-      const html = document.documentElement;
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      } else {
-        html.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      }
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('equinox_theme', isDark ? 'dark' : 'light');
     });
   }
 
-  // ==========================================
-  // 2. Starfield Particles Animation on Hero
-  // ==========================================
+  // ------------------------------------------------------------------------
+  // B. Twinkling Starfield Canvas
+  // ------------------------------------------------------------------------
   const canvas = document.getElementById('starfield');
   if (canvas) {
     const ctx = canvas.getContext('2d');
     let stars = [];
     const numStars = 140;
+    let animationFrameId = null;
 
     function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.scale(dpr, dpr);
       initStars();
     }
 
     function initStars() {
       stars = [];
+      const w = window.innerWidth;
+      const h = window.innerHeight;
       for (let i = 0; i < numStars; i++) {
         stars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * (canvas.height * 0.7), // Concentrate above planet curve
-          radius: Math.random() * 1.5 + 0.3,
+          x: Math.random() * w,
+          y: Math.random() * (h * 0.75),
+          radius: Math.random() * 1.4 + 0.4,
           alpha: Math.random() * 0.8 + 0.2,
-          speed: Math.random() * 0.02 + 0.005,
-          twinkleDelta: (Math.random() - 0.5) * 0.02,
+          twinkleSpeed: (Math.random() - 0.5) * 0.02,
         });
       }
     }
 
-    function renderStars() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function render() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      ctx.clearRect(0, 0, w, h);
+
       for (let s of stars) {
-        s.alpha += s.twinkleDelta;
+        s.alpha += s.twinkleSpeed;
         if (s.alpha > 0.95 || s.alpha < 0.15) {
-          s.twinkleDelta = -s.twinkleDelta;
+          s.twinkleSpeed = -s.twinkleSpeed;
         }
+
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(224, 242, 254, ${s.alpha})`;
+        ctx.fillStyle = `rgba(224, 242, 254, ${Math.max(0.1, Math.min(1, s.alpha))})`;
         ctx.fill();
       }
-      requestAnimationFrame(renderStars);
+
+      animationFrameId = requestAnimationFrame(render);
     }
 
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(animationFrameId);
+      resizeCanvas();
+      render();
+    });
+
     resizeCanvas();
-    renderStars();
+    render();
   }
 
-  // ==========================================
-  // 3. Navigation Drawer Logic
-  // ==========================================
+  // ------------------------------------------------------------------------
+  // C. Slide-out Navigation Drawer
+  // ------------------------------------------------------------------------
   const menuBtn = document.getElementById('menu-btn');
   const drawer = document.getElementById('drawer');
   const drawerBackdrop = document.getElementById('drawer-backdrop');
@@ -110,14 +127,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
   if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeDrawer);
 
-  // Close drawer when any internal navigation link is tapped
   document.querySelectorAll('#drawer a').forEach((link) => {
     link.addEventListener('click', closeDrawer);
   });
 
-  // ==========================================
-  // 4. Global Search Modal Interaction
-  // ==========================================
+  // ------------------------------------------------------------------------
+  // D. Global Search Modal & Filter
+  // ------------------------------------------------------------------------
   const searchTrigger = document.getElementById('search-trigger');
   const searchModal = document.getElementById('search-modal');
   const closeSearch = document.getElementById('close-search');
@@ -127,9 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function openSearch() {
     if (!searchModal) return;
     searchModal.classList.remove('hidden');
-    setTimeout(() => {
-      if (searchInput) searchInput.focus();
-    }, 50);
+    if (searchInput) {
+      setTimeout(() => searchInput.focus(), 80);
+    }
   }
 
   function hideSearch() {
@@ -159,42 +175,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Search filter dynamic filtering
   if (searchInput && searchResults) {
     searchInput.addEventListener('input', (e) => {
       const q = e.target.value.toLowerCase().trim();
       const items = searchResults.querySelectorAll('a');
-      items.forEach((el) => {
-        const text = el.innerText.toLowerCase();
-        el.style.display = text.includes(q) ? 'flex' : 'none';
+      items.forEach((item) => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(q) ? 'flex' : 'none';
       });
     });
   }
 
-  // ==========================================
-  // 5. Audio Synthesizer Ambiance Simulation
-  // ==========================================
+  // ------------------------------------------------------------------------
+  // E. Cosmic Ambiance Synthesizer (Binaural Drone Generator)
+  // ------------------------------------------------------------------------
   const audioBtn = document.getElementById('audio-toggle');
   const audioIcon = document.getElementById('audio-icon');
   let audioCtx = null;
   let isPlaying = false;
-  let osc1, osc2, gainNode;
+  let osc1 = null;
+  let osc2 = null;
+  let gainNode = null;
 
   if (audioBtn) {
-    audioBtn.addEventListener('click', () => {
+    audioBtn.addEventListener('click', async () => {
       if (!isPlaying) {
         try {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-          osc1 = audioCtx.createOscillator();
-          osc2 = audioCtx.createOscillator();
-          gainNode = audioCtx.createGain();
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContextClass) {
+            console.warn('Web Audio API is not supported in this browser.');
+            return;
+          }
 
+          audioCtx = new AudioContextClass();
+          if (audioCtx.state === 'suspended') {
+            await audioCtx.resume();
+          }
+
+          // Oscillator 1: 55Hz (Sub-bass celestial drone)
+          osc1 = audioCtx.createOscillator();
           osc1.type = 'sine';
-          osc1.frequency.setValueAtTime(55, audioCtx.currentTime); // 55Hz low cosmic drone
+          osc1.frequency.setValueAtTime(55, audioCtx.currentTime);
+
+          // Oscillator 2: 110Hz (Harmonic overtone)
+          osc2 = audioCtx.createOscillator();
           osc2.type = 'triangle';
           osc2.frequency.setValueAtTime(110, audioCtx.currentTime);
 
-          gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+          // Master Gain Node with gentle attack ramp
+          gainNode = audioCtx.createGain();
+          gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+          gainNode.gain.linearRampToValueAtTime(0.045, audioCtx.currentTime + 1.2);
 
           osc1.connect(gainNode);
           osc2.connect(gainNode);
@@ -203,67 +234,83 @@ document.addEventListener('DOMContentLoaded', () => {
           osc1.start();
           osc2.start();
           isPlaying = true;
+
           if (audioIcon) {
-            audioIcon.innerText = 'volume_up';
+            audioIcon.textContent = 'volume_up';
             audioIcon.classList.add('text-primary');
           }
-        } catch (e) {
-          console.warn('Audio contextual playback prevented', e);
+        } catch (err) {
+          console.warn('Cosmic Ambiance playback blocked by browser policy:', err);
         }
       } else {
-        if (gainNode && audioCtx) {
-          gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
-          setTimeout(() => {
-            if (audioCtx && audioCtx.state !== 'closed') {
-              audioCtx.close();
-            }
+        // Safe, clean fade-out shutdown
+        if (gainNode && audioCtx && audioCtx.state !== 'closed') {
+          try {
+            gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + 0.4);
+
+            setTimeout(() => {
+              try {
+                if (osc1) { osc1.stop(); osc1.disconnect(); }
+                if (osc2) { osc2.stop(); osc2.disconnect(); }
+                if (gainNode) { gainNode.disconnect(); }
+                if (audioCtx && audioCtx.state !== 'closed') {
+                  audioCtx.close();
+                }
+              } catch (_) {}
+              isPlaying = false;
+              if (audioIcon) {
+                audioIcon.textContent = 'volume_off';
+                audioIcon.classList.remove('text-primary');
+              }
+            }, 450);
+          } catch (e) {
             isPlaying = false;
             if (audioIcon) {
-              audioIcon.innerText = 'volume_off';
+              audioIcon.textContent = 'volume_off';
               audioIcon.classList.remove('text-primary');
             }
-          }, 500);
+          }
+        } else {
+          isPlaying = false;
+          if (audioIcon) {
+            audioIcon.textContent = 'volume_off';
+            audioIcon.classList.remove('text-primary');
+          }
         }
       }
     });
   }
 });
 
-// ==========================================
-// 6. Interactive Space Quiz Handler
-// ==========================================
+// ==========================================================================
+// 3. Interactive Space Quiz Handler (Global Scope for inline onclick)
+// ==========================================================================
 function handleQuizAnswer(button, isCorrect) {
   const feedback = document.getElementById('quiz-feedback');
   if (!feedback) return;
 
   feedback.classList.remove('hidden');
 
-  // Reset sibling buttons
-  const buttons = button.parentElement.querySelectorAll('button');
-  buttons.forEach((btn) => {
-    btn.classList.remove(
-      'bg-emerald-500/30',
-      'border-emerald-400',
-      'bg-rose-500/30',
-      'border-rose-400'
-    );
-    btn.classList.add('bg-white/5', 'border-white/10');
-  });
+  // Reset sibling button states
+  const container = button.closest('.space-y-1\\.5') || button.parentElement;
+  if (container) {
+    const siblingBtns = container.querySelectorAll('button');
+    siblingBtns.forEach((btn) => {
+      btn.className = 'w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-xs font-mono';
+    });
+  }
 
   if (isCorrect) {
-    button.classList.remove('bg-white/5');
-    button.classList.add('bg-emerald-500/30', 'border-emerald-400');
+    button.className = 'w-full text-left p-2 rounded-lg bg-emerald-500/30 border border-emerald-400 text-emerald-200 transition-colors text-xs font-mono font-semibold';
     feedback.className = 'text-[11px] font-mono text-emerald-400 pt-1 font-semibold';
-    feedback.innerText =
-      'Correct! Pauli exclusion principle prevents electron collapse up to Chandrasekhar limit (~1.44 M☉).';
+    feedback.textContent = '✓ Correct! Pauli exclusion principle prevents electron collapse up to the Chandrasekhar limit (~1.44 M☉).';
   } else {
-    button.classList.remove('bg-white/5');
-    button.classList.add('bg-rose-500/30', 'border-rose-400');
+    button.className = 'w-full text-left p-2 rounded-lg bg-rose-500/30 border border-rose-400 text-rose-200 transition-colors text-xs font-mono';
     feedback.className = 'text-[11px] font-mono text-rose-400 pt-1';
-    feedback.innerText =
-      'Incorrect. Quantum electron degeneracy pressure counteracts gravitational collapse.';
+    feedback.textContent = '✕ Incorrect. Quantum electron degeneracy pressure counteracts gravitational collapse.';
   }
 }
 
-// Attach to window so inline onclick handlers continue to function
+// Ensure global accessibility
 window.handleQuizAnswer = handleQuizAnswer;
