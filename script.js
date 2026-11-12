@@ -203,7 +203,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ------------------------------------------------------------------------
-  // F. Cosmic Ambiance Synthesizer (Binaural Drone Generator)
+  // F. Planetary Expedition Interactive Selection (Earth, Mars, Jupiter)
+  // ------------------------------------------------------------------------
+  const planetCards = document.querySelectorAll('.planet-card');
+  planetCards.forEach((card) => {
+    card.addEventListener('click', () => {
+      planetCards.forEach((c) => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+
+  // ------------------------------------------------------------------------
+  // G. Cosmic Ambiance Synthesizer (Binaural Drone Generator)
   // ------------------------------------------------------------------------
   const audioBtn = document.getElementById('audio-toggle');
   const audioIcon = document.getElementById('audio-icon');

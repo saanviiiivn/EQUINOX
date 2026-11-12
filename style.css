@@ -166,6 +166,25 @@ html:not(.dark) .theme-icon-dark {
 }
 
 /* --------------------------------------------------------------------------
+   Planetary Interactive Cards (3 Body Selection)
+   -------------------------------------------------------------------------- */
+.planet-card {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  position: relative;
+}
+
+.planet-card:hover {
+  transform: translateY(-4px);
+}
+
+.planet-card.selected {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.35), 0 10px 20px -5px rgba(0, 0, 0, 0.5) !important;
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* --------------------------------------------------------------------------
    News Feed Filter Buttons
    -------------------------------------------------------------------------- */
 .feed-btn {

@@ -55,8 +55,8 @@
   <!-- Tailwind Play CDN (Clean bundle without CORS plugin blockers) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="style.css"/>
+  <!-- Custom Stylesheet with cache-busting -->
+  <link rel="stylesheet" href="style.css?v=2.0"/>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-sans transition-colors duration-500 overflow-x-hidden antialiased selection:bg-primary selection:text-black">
 
@@ -275,9 +275,10 @@
         </p>
       </div>
 
+      <!-- 3 Planetary Selection Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Earth Card -->
-        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-lg dark:shadow-none hover:border-primary transition-all duration-300 group flex flex-col justify-between cursor-pointer">
+        <!-- Earth Card (Selected by default) -->
+        <div class="planet-card selected p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-lg dark:shadow-none hover:border-primary transition-all duration-300 group flex flex-col justify-between" data-planet="earth">
           <div class="space-y-4">
             <div class="flex items-center justify-between">
               <span class="px-2.5 py-1 rounded-full text-[10px] font-mono bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800">TERRESTRIAL</span>
@@ -304,7 +305,7 @@
         </div>
 
         <!-- Mars Card -->
-        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-lg dark:shadow-none hover:border-red-400 transition-all duration-300 group flex flex-col justify-between cursor-pointer">
+        <div class="planet-card p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-lg dark:shadow-none hover:border-red-400 transition-all duration-300 group flex flex-col justify-between" data-planet="mars">
           <div class="space-y-4">
             <div class="flex items-center justify-between">
               <span class="px-2.5 py-1 rounded-full text-[10px] font-mono bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">ACTIVE ROVER</span>
@@ -331,7 +332,7 @@
         </div>
 
         <!-- Jupiter Card -->
-        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-lg dark:shadow-none hover:border-amber-400 transition-all duration-300 group flex flex-col justify-between cursor-pointer">
+        <div class="planet-card p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-lg dark:shadow-none hover:border-amber-400 transition-all duration-300 group flex flex-col justify-between" data-planet="jupiter">
           <div class="space-y-4">
             <div class="flex items-center justify-between">
               <span class="px-2.5 py-1 rounded-full text-[10px] font-mono bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">GAS GIANT</span>
@@ -580,7 +581,7 @@
     </div>
   </footer>
 
-  <!-- ==================== CLIENT LOGIC SCRIPT ==================== -->
-  <script src="script.js"></script>
+  <!-- ==================== CLIENT LOGIC SCRIPT (Cache-Busted) ==================== -->
+  <script src="script.js?v=2.0"></script>
 </body>
 </html>
