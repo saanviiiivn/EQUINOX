@@ -1,0 +1,85 @@
+/* ==========================================================================
+   EQUINOX – The Cosmic Daily Stylesheet
+   ========================================================================== */
+
+/* Root & Base Styles */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* Glassmorphism Effects */
+.glass-dark {
+  background: rgba(8, 14, 28, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(14, 165, 233, 0.18);
+}
+
+/* Cosmic Radial Glow Background */
+.cosmic-radial-glow {
+  background: radial-gradient(
+    circle at 50% 15%,
+    rgba(56, 189, 248, 0.28) 0%,
+    rgba(14, 165, 233, 0.05) 45%,
+    transparent 75%
+  );
+}
+
+/* Scrollbar Utility: Hide scrollbar while keeping scroll functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Keyframe Animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes kenburns {
+  0% {
+    transform: scale(1.02) translateY(0px);
+  }
+  100% {
+    transform: scale(1.12) translateY(-14px);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-float-slow {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-kenburns {
+  animation: kenburns 35s ease-in-out infinite alternate;
+}

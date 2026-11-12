@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+  <title>EQUINOX – The Cosmic Daily</title>
+
+  <!-- Google Fonts & Material Symbols -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Tailwind CSS Play CDN & Config -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#38bdf8", // Celestial cyan
+            "background-light": "#f1f5f9",
+            "background-dark": "#030712",
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+          },
+          borderRadius: {
+            DEFAULT: "1rem",
+          },
+          animation: {
+            'pulse-glow': 'pulseGlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float-slow': 'float 6s ease-in-out infinite',
+            'kenburns': 'kenburns 35s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            pulseGlow: {
+              '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+              '50%': { opacity: '0.8', transform: 'scale(1.05)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-8px)' },
+            },
+            kenburns: {
+              '0%': { transform: 'scale(1.02) translateY(0px)' },
+              '100%': { transform: 'scale(1.12) translateY(-14px)' },
+            }
+          }
+        },
+      },
+    };
+  </script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-sans transition-colors duration-500 overflow-x-hidden antialiased selection:bg-primary selection:text-black">
+
+  <!-- ==================== HEADER NAVIGATION ==================== -->
+  <header class="fixed top-0 inset-x-0 z-40 transition-all duration-300 px-4 py-3 bg-white/70 dark:bg-black/60 backdrop-blur-md border-b border-slate-200/60 dark:border-white/10">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button aria-label="Open Navigation Menu" class="p-2 rounded-full hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors flex items-center justify-center" id="menu-btn">
+          <span class="material-symbols-outlined text-[26px]">menu</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span class="text-[11px] font-mono tracking-widest uppercase text-slate-500 dark:text-slate-400 font-medium">LIVE TELEMETRY</span>
+        </div>
+      </div>
+      <a class="flex items-center gap-2 group" href="#">
+        <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
+          <span class="material-symbols-outlined text-white text-[16px]">public</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-display font-bold tracking-[0.22em] text-sm md:text-base leading-none text-slate-900 dark:text-white">EQUINOX</span>
+          <span class="text-[8px] font-mono tracking-wider text-slate-400 dark:text-sky-300/80">COSMIC DAILY</span>
+        </div>
+      </a>
+      <div class="flex items-center gap-1 sm:gap-2">
+        <button aria-label="Search Cosmos" class="p-2 rounded-full hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors flex items-center justify-center" id="search-trigger">
+          <span class="material-symbols-outlined text-[22px]">search</span>
+        </button>
+        <button aria-label="Toggle Cosmic Ambiance" class="hidden sm:flex p-2 rounded-full hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors items-center justify-center" id="audio-toggle">
+          <span class="material-symbols-outlined text-[22px]" id="audio-icon">volume_off</span>
+        </button>
+        <button aria-label="Toggle Dark / Light Theme" class="p-2 rounded-full hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors flex items-center justify-center" id="theme-btn">
+          <span class="material-symbols-outlined text-[22px] dark:hidden">dark_mode</span>
+          <span class="material-symbols-outlined text-[22px] hidden dark:inline">light_mode</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== SIDE DRAWER ==================== -->
+  <aside class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0" id="drawer">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="drawer-backdrop"></div>
+    <div class="absolute top-0 bottom-0 left-0 w-80 max-w-[85vw] bg-white dark:bg-slate-950 p-6 flex flex-col justify-between transform -translate-x-full transition-transform duration-300 ease-out border-r border-slate-200 dark:border-white/10 shadow-2xl" id="drawer-panel">
+      <div class="space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-2xl">language</span>
+            <span class="font-display font-bold tracking-widest text-slate-900 dark:text-white">EQUINOX ATLAS</span>
+          </div>
+          <button class="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white" id="close-drawer">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <nav class="space-y-1 font-display">
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#hero">
+            <span class="material-symbols-outlined text-primary text-xl">home</span>
+            <span class="text-sm font-medium">Home Telemetry</span>
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#solar-system">
+            <span class="material-symbols-outlined text-primary text-xl">brightness_7</span>
+            <span class="text-sm font-medium">Solar System 3D</span>
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#cosmic-news">
+            <span class="material-symbols-outlined text-primary text-xl">newspaper</span>
+            <span class="text-sm font-medium">The Cosmic Daily News</span>
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#deep-space">
+            <span class="material-symbols-outlined text-primary text-xl">blur_on</span>
+            <span class="text-sm font-medium">Deep Space &amp; Galaxies</span>
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#missions">
+            <span class="material-symbols-outlined text-primary text-xl">rocket_launch</span>
+            <span class="text-sm font-medium">Missions &amp; Telemetry</span>
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#space-quiz">
+            <span class="material-symbols-outlined text-primary text-xl">help</span>
+            <span class="text-sm font-medium">Astro Physics Quiz</span>
+          </a>
+        </nav>
+      </div>
+      <div class="pt-6 border-t border-slate-200 dark:border-slate-800">
+        <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-white/5 space-y-1.5">
+          <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <span>ISS Position</span>
+            <span class="text-emerald-500 font-mono text-[10px]">ORBITING</span>
+          </div>
+          <div class="font-mono text-xs text-slate-800 dark:text-slate-200">
+            LAT: 51.64° N | LNG: 0.12° W
+          </div>
+          <p class="text-[10px] text-slate-400">Velocity: 27,600 km/h (17,150 mph)</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==================== SEARCH MODAL ==================== -->
+  <div class="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/70 backdrop-blur-md hidden transition-all" id="search-modal">
+    <div class="w-full max-w-xl bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-white/10 shadow-2xl space-y-4">
+      <div class="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+        <span class="material-symbols-outlined text-primary">search</span>
+        <input class="w-full bg-transparent outline-none text-slate-900 dark:text-white placeholder:text-slate-400 text-base" id="search-input" placeholder="Search planets, James Webb, black holes..." type="text"/>
+        <button class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs font-mono px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded" id="close-search">ESC</button>
+      </div>
+      <div class="max-h-64 overflow-y-auto space-y-2 py-1" id="search-results">
+        <a class="flex items-center justify-between p-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors" href="#solar-system">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-amber-400">wb_sunny</span>
+            <div>
+              <div class="text-sm font-semibold text-slate-900 dark:text-white">Earth &amp; Solar System</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">Orbit specs, atmosphere composition</div>
+            </div>
+          </div>
+          <span class="text-[11px] font-mono text-primary">PLANETARY</span>
+        </a>
+        <a class="flex items-center justify-between p-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors" href="#cosmic-news">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-sky-400">satellite_alt</span>
+            <div>
+              <div class="text-sm font-semibold text-slate-900 dark:text-white">James Webb NIRCam Deep Field</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">Observing primordial light 13.4B yrs ago</div>
+            </div>
+          </div>
+          <span class="text-[11px] font-mono text-primary">TELESCOPE</span>
+        </a>
+        <a class="flex items-center justify-between p-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors" href="#deep-space">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-purple-400">lens_blur</span>
+            <div>
+              <div class="text-sm font-semibold text-slate-900 dark:text-white">Sagittarius A* Singularity</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">Event horizon gravitational dynamics</div>
+            </div>
+          </div>
+          <span class="text-[11px] font-mono text-primary">BLACK HOLE</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section class="relative min-h-screen flex flex-col justify-between items-center text-center overflow-hidden pt-28 pb-12 px-4" id="hero">
+    <div class="absolute inset-0 -z-20 overflow-hidden bg-black">
+      <img alt="Equinox ultra high resolution cinematic Earth curved horizon viewed from orbit with luminous blue atmosphere" class="w-full h-full object-cover object-top filter brightness-[0.9] contrast-[1.1] animate-kenburns select-none pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEMMJ2It6A_05J4mcCSCryU0WOa0xgasZ3oyXq1TamLXlmgCMuW2K4pkJKaopa4aF7n22wyvzMYnX88trJHzlLEk5JbDT9lNyBR_DIuOMHRanUkF_QABSlGEFyFEwMhld_mAkrtjbd51l1vV3rKCP3AvMVZNcsuBEJykymrpVCY0qtJIvp_XsGNFyyXJxKDGTKctShX5SfREtnFIhwr4h1HIbW0l4l4u0rgLx6yAc"/>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black pointer-events-none"></div>
+      <div class="absolute inset-0 cosmic-radial-glow mix-blend-screen pointer-events-none"></div>
+      <div class="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent pointer-events-none"></div>
+    </div>
+    <canvas class="absolute inset-0 -z-10 pointer-events-none opacity-80" id="starfield"></canvas>
+
+    <div class="max-w-4xl mx-auto flex flex-col items-center mt-8 md:mt-12 space-y-6">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-sky-400/40 bg-sky-950/40 backdrop-blur-md text-sky-200 text-xs font-mono tracking-[0.28em] uppercase shadow-lg shadow-sky-500/10">
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping"></span>
+        AN INTERACTIVE UNIVERSE
+      </div>
+      <div class="space-y-2">
+        <h1 class="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-display font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-sky-300 drop-shadow-[0_10px_35px_rgba(56,189,248,0.35)]">
+          EQUINOX
+        </h1>
+        <p class="text-sm sm:text-base md:text-lg font-mono tracking-[0.35em] text-sky-300/90 uppercase font-semibold">
+          THE UNIVERSE IS INFINITE
+        </p>
+      </div>
+      <p class="max-w-2xl text-slate-200 text-sm sm:text-base md:text-lg font-normal leading-relaxed drop-shadow-md text-center px-4">
+        Explore the wonders of our universe, discover distant planets, uncover cosmic mysteries, and experience the beauty of space.
+      </p>
+      <div class="pt-4 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto px-6">
+        <a class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-primary text-slate-950 font-display font-bold text-sm tracking-wider uppercase transition-all duration-300 shadow-[0_0_25px_rgba(56,189,248,0.5)] hover:shadow-[0_0_35px_rgba(56,189,248,0.8)] hover:scale-105 active:scale-95 flex items-center justify-center gap-2" href="#solar-system">
+          <span>EXPLORE THE UNIVERSE</span>
+          <span class="material-symbols-outlined text-base">arrow_forward</span>
+        </a>
+        <a class="w-full sm:w-auto px-7 py-3.5 rounded-xl border border-white/20 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-display font-semibold text-sm tracking-wider uppercase transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2" href="#cosmic-news">
+          <span>DISCOVER MORE</span>
+          <span class="material-symbols-outlined text-base">explore</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Telemetry Bar -->
+    <div class="w-full max-w-5xl mx-auto flex flex-col items-center gap-6 mt-12">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 w-full px-4">
+        <div class="glass-dark dark:bg-black/40 rounded-xl p-3 text-center border border-white/10">
+          <span class="block text-[10px] font-mono text-sky-400 uppercase tracking-wider">Orbital Altitude</span>
+          <span class="text-sm sm:text-base font-bold font-mono text-white">408.2 KM</span>
+        </div>
+        <div class="glass-dark dark:bg-black/40 rounded-xl p-3 text-center border border-white/10">
+          <span class="block text-[10px] font-mono text-sky-400 uppercase tracking-wider">Atmospheric Depth</span>
+          <span class="text-sm sm:text-base font-bold font-mono text-white">100 KM (Kármán)</span>
+        </div>
+        <div class="glass-dark dark:bg-black/40 rounded-xl p-3 text-center border border-white/10">
+          <span class="block text-[10px] font-mono text-sky-400 uppercase tracking-wider">Earth Speed</span>
+          <span class="text-sm sm:text-base font-bold font-mono text-white">107,000 KM/H</span>
+        </div>
+        <div class="glass-dark dark:bg-black/40 rounded-xl p-3 text-center border border-white/10">
+          <span class="block text-[10px] font-mono text-sky-400 uppercase tracking-wider">Known Exoplanets</span>
+          <span class="text-sm sm:text-base font-bold font-mono text-white">5,502+ CONFIRMED</span>
+        </div>
+      </div>
+      <a class="flex flex-col items-center gap-1 group text-slate-300 hover:text-white transition-colors pt-2" href="#solar-system">
+        <span class="text-[10px] font-mono tracking-[0.3em] uppercase text-sky-300/80 group-hover:text-sky-300">SCROLL TO EXPLORE</span>
+        <span class="material-symbols-outlined text-2xl animate-bounce text-sky-400">keyboard_arrow_down</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==================== SOLAR SYSTEM OBSERVATORY ==================== -->
+  <section class="relative py-20 px-4 md:px-8 border-t border-slate-200 dark:border-white/5 bg-slate-100/50 dark:bg-slate-950/40" id="solar-system">
+    <div class="max-w-7xl mx-auto space-y-10">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-[0.25em] text-primary font-semibold">Planetary Observatory</span>
+          <h2 class="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mt-1">Solar System Expedition</h2>
+        </div>
+        <p class="text-xs md:text-sm text-slate-600 dark:text-slate-400 max-w-md font-sans">
+          Select celestial bodies to inspect atmospheric density, mean orbital radius, and scientific missions currently gathering telemetry.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Earth Card -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-lg dark:shadow-none hover:border-primary transition-all duration-300 group flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-mono bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800">TERRESTRIAL</span>
+              <span class="text-xs font-mono text-slate-400">03 // SOL</span>
+            </div>
+            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-sky-600 via-blue-500 to-teal-300 shadow-md shadow-sky-500/30 group-hover:scale-110 transition-transform"></div>
+            <div>
+              <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white">Earth (Terra)</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                The only planetary body known to support life, boasting dynamic plate tectonics, liquid water oceans, and protective magnetosphere.
+              </p>
+            </div>
+          </div>
+          <div class="pt-6 border-t border-slate-100 dark:border-slate-800 mt-6 grid grid-cols-2 gap-3 text-xs font-mono">
+            <div>
+              <span class="text-slate-400 block text-[10px]">DISTANCE TO SUN</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200">149.6M km (1 AU)</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[10px]">ORBITAL PERIOD</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200">365.25 Days</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mars Card -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-lg dark:shadow-none hover:border-red-400 transition-all duration-300 group flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-mono bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">ACTIVE ROVER</span>
+              <span class="text-xs font-mono text-slate-400">04 // SOL</span>
+            </div>
+            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-rose-700 via-red-500 to-amber-400 shadow-md shadow-rose-500/30 group-hover:scale-110 transition-transform"></div>
+            <div>
+              <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white">Mars (Ares)</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                The Red Planet contains Olympus Mons, the tallest volcano in the solar system, and ancient desiccated river deltas being parsed by Perseverance.
+              </p>
+            </div>
+          </div>
+          <div class="pt-6 border-t border-slate-100 dark:border-slate-800 mt-6 grid grid-cols-2 gap-3 text-xs font-mono">
+            <div>
+              <span class="text-slate-400 block text-[10px]">DISTANCE TO SUN</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200">227.9M km</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[10px]">DAY LENGTH</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200">24h 37m</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jupiter Card -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-lg dark:shadow-none hover:border-amber-400 transition-all duration-300 group flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-mono bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">GAS GIANT</span>
+              <span class="text-xs font-mono text-slate-400">05 // SOL</span>
+            </div>
+            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-amber-700 via-yellow-600 to-orange-300 shadow-md shadow-amber-500/30 group-hover:scale-110 transition-transform"></div>
+            <div>
+              <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white">Jupiter &amp; Europa</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                Solar monarch harboring 95 known moons. Europa Clipper is presently traversing toward its vast sub-surface saline oceans.
+              </p>
+            </div>
+          </div>
+          <div class="pt-6 border-t border-slate-100 dark:border-slate-800 mt-6 grid grid-cols-2 gap-3 text-xs font-mono">
+            <div>
+              <span class="text-slate-400 block text-[10px]">GRAVITY</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200">24.79 m/s² (2.5x)</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[10px]">MAGNETIC SHIELD</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200">20,000x Earth</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== THE COSMIC DAILY NEWS ==================== -->
+  <section class="py-20 px-4 md:px-8 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-white/5" id="cosmic-news">
+    <div class="max-w-7xl mx-auto space-y-10">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200 dark:border-slate-800">
+        <div>
+          <div class="flex items-center gap-2 text-primary font-mono text-xs uppercase tracking-widest">
+            <span class="material-symbols-outlined text-sm">auto_awesome</span>
+            <span>The Cosmic Daily Dispatch</span>
+          </div>
+          <h2 class="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mt-1">Deep Space Chronicles</h2>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs font-mono">
+          <span class="px-3 py-1.5 rounded-lg bg-primary text-slate-950 font-bold">ALL FEEDS</span>
+          <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer transition-colors">JAMES WEBB</span>
+          <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer transition-colors">EXOPLANETS</span>
+          <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer transition-colors">ASTROBIOLOGY</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Featured Article -->
+        <article class="lg:col-span-2 rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 flex flex-col justify-between group">
+          <div class="relative h-72 sm:h-96 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent z-10"></div>
+            <div class="w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900 via-indigo-950 to-black group-hover:scale-105 transition-transform duration-700 flex items-center justify-center p-8">
+              <div class="w-48 h-48 rounded-full border border-sky-400/20 shadow-[0_0_90px_rgba(56,189,248,0.4)] animate-pulse flex items-center justify-center">
+                <div class="w-24 h-24 rounded-full bg-sky-200/10 backdrop-blur-md border border-white/20"></div>
+              </div>
+            </div>
+            <div class="absolute top-4 left-4 z-20 flex gap-2">
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-primary text-black">ASTRONOMY PIC OF THE DAY</span>
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-mono bg-black/60 backdrop-blur-sm text-white">JWST NIRSpec</span>
+            </div>
+            <div class="absolute bottom-4 left-4 right-4 z-20">
+              <span class="text-xs font-mono text-sky-400">TELEMETRY ID: JWST-DEEP-7741</span>
+              <h3 class="text-xl sm:text-3xl font-display font-bold text-white mt-1">Cosmic Dawn: Primordial Galaxies Detected 300M Years Post-Big Bang</h3>
+            </div>
+          </div>
+          <div class="p-6 space-y-4">
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-sans">
+              Spectroscopic confirmation from the James Webb Space Telescope reveals unpredicted elemental maturity in hyper-distant galaxy GS-z14-0. The stellar nursery challenges existing cosmic inflation timing constraints and hints at early star formation engines.
+            </p>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 font-mono">
+              <span>BY DR. A. VANCE • SENIOR ASTROPHYSICIST</span>
+              <span class="text-primary hover:underline cursor-pointer flex items-center gap-1">Read Paper <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Right Side Alerts & Quiz -->
+        <div class="space-y-6">
+          <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono text-amber-500 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-base">radar</span> NEO SURVEILLANCE
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">CLASS: APOLLO</span>
+            </div>
+            <h4 class="font-display font-bold text-slate-900 dark:text-white text-base">Asteroid 2024 YR4 Near Earth Flyby</h4>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Planetary radar observations successfully refined orbital parameters. Trajectory confirmed completely benign at 0.028 AU clearance.
+            </p>
+            <div class="flex items-center justify-between text-[11px] font-mono text-slate-600 dark:text-slate-300 pt-2 border-t border-slate-200 dark:border-slate-800">
+              <span>Velocity: 31.4 km/s</span>
+              <span class="text-emerald-500 font-semibold">0.0 IMPACT HAZARD</span>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono text-sky-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-base">graphic_eq</span> PULSAR SURVEY
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">CHIME / FAST</span>
+            </div>
+            <h4 class="font-display font-bold text-slate-900 dark:text-white text-base">Millisecond Pulsar Emits Perfectly Coherent 707 Hz Burst</h4>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Rotating faster than kitchen blender blades, neutron star PSR J0952 provides new gravitational wave background baseline.
+            </p>
+            <div class="flex items-center justify-between text-[11px] font-mono text-slate-600 dark:text-slate-300 pt-2 border-t border-slate-200 dark:border-slate-800">
+              <span>Period: 1.41 ms</span>
+              <span class="text-primary cursor-pointer hover:underline">Acoustic Audio</span>
+            </div>
+          </div>
+
+          <!-- Astro Quiz Card -->
+          <div class="p-5 rounded-2xl bg-gradient-to-br from-sky-950 to-indigo-950 border border-sky-400/20 text-white space-y-3" id="space-quiz">
+            <div class="flex items-center gap-2 text-xs font-mono text-sky-300">
+              <span class="material-symbols-outlined text-base">quiz</span>
+              DAILY ASTRO QUIZ
+            </div>
+            <p class="text-sm font-semibold">What prevents a White Dwarf star from collapsing further under gravity?</p>
+            <div class="space-y-1.5 text-xs font-mono">
+              <button class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors" onclick="handleQuizAnswer(this, false)">A. Thermal photon gas pressure</button>
+              <button class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors" onclick="handleQuizAnswer(this, true)">B. Electron degeneracy pressure</button>
+              <button class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors" onclick="handleQuizAnswer(this, false)">C. Dark energy boundary</button>
+            </div>
+            <div class="text-[11px] font-mono hidden pt-1" id="quiz-feedback"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== DEEP SPACE / GENERAL RELATIVITY ==================== -->
+  <section class="relative py-20 px-4 md:px-8 bg-slate-900 text-white overflow-hidden" id="deep-space">
+    <div class="absolute inset-0 opacity-40 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-6">
+        <span class="px-3 py-1 rounded-full text-xs font-mono uppercase tracking-[0.2em] bg-purple-950/80 text-purple-300 border border-purple-500/30">
+          GENERAL RELATIVITY SIMULATOR
+        </span>
+        <h2 class="text-3xl md:text-5xl font-display font-bold leading-tight">
+          Venture to the Event Horizon of Sagittarius A*
+        </h2>
+        <p class="text-slate-300 text-sm md:text-base leading-relaxed">
+          Experience gravitational lensing, photon spheres, and intense spacetime warping calculated via Kerr-metric physics. Inspect the relativistic accretion disk spinning at 30% speed of light.
+        </p>
+        <div class="flex flex-wrap gap-4 pt-2">
+          <button class="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-display font-semibold text-xs tracking-wider uppercase transition-all shadow-lg shadow-purple-600/30 flex items-center gap-2">
+            <span>LAUNCH GRAVITY SIM</span>
+            <span class="material-symbols-outlined text-sm">cyclone</span>
+          </button>
+          <a class="px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 text-white font-display font-semibold text-xs tracking-wider uppercase transition-all flex items-center gap-2" href="#hero">
+            <span>EXPLORE ATLAS</span>
+            <span class="material-symbols-outlined text-sm">public</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Kerr-Metric Simulated Black Hole Visualizer -->
+      <div class="relative flex items-center justify-center p-8 rounded-3xl bg-black/60 border border-purple-500/20 backdrop-blur-xl">
+        <div class="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full border-4 border-amber-500/20 animate-spin [animation-duration:20s]"></div>
+          <div class="absolute inset-4 rounded-full border-2 border-dashed border-sky-400/30 animate-spin [animation-duration:14s]"></div>
+          <div class="absolute inset-10 rounded-full bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 opacity-60 blur-md animate-pulse"></div>
+          <div class="relative w-36 h-36 rounded-full bg-black shadow-[0_0_50px_rgba(255,255,255,0.2)] border border-white/20 flex flex-col items-center justify-center text-center p-2">
+            <span class="text-[9px] font-mono text-purple-300">SINGULARITY</span>
+            <span class="text-xs font-mono font-bold text-white">4.3M M☉</span>
+            <span class="text-[8px] font-mono text-slate-400 mt-1">r_s = 12.7M KM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-white dark:bg-black border-t border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-400 text-xs font-sans">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-16">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-10">
+        <div class="md:col-span-2 space-y-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white">
+              <span class="material-symbols-outlined text-[16px]">public</span>
+            </div>
+            <span class="font-display font-bold tracking-[0.25em] text-base text-slate-900 dark:text-white">EQUINOX</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
+            EQUINOX – The Cosmic Daily delivers peer-reviewed astrophysics coverage, interactive telemetry feeds, and real-time orbital intelligence for astronomers and enthusiasts worldwide.
+          </p>
+          <div class="text-[11px] font-mono text-slate-400">
+            Exploring the universe, one discovery at a time.
+          </div>
+        </div>
+
+        <div class="space-y-3 font-mono">
+          <h5 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Observatory</h5>
+          <ul class="space-y-2 text-xs">
+            <li><a class="hover:text-primary transition-colors" href="#solar-system">Inner Solar System</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#solar-system">Outer Jovian Moons</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#deep-space">Black Hole Horizon</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#cosmic-news">James Webb NIRCam</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-3 font-mono">
+          <h5 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Telemetry &amp; Feeds</h5>
+          <ul class="space-y-2 text-xs">
+            <li><a class="hover:text-primary transition-colors" href="#">NASA Horizons Ephemeris</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">ESA Gaia DR3 Catalog</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">JPL Horizons API</a></li>
+            <li><a class="hover:text-primary transition-colors" href="#">HST Legacy Archive</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-3 font-mono">
+          <h5 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Fleet Telemetry</h5>
+          <div class="space-y-2 text-[11px]">
+            <div class="flex items-center justify-between">
+              <span>JWST (L2 Orbit)</span>
+              <span class="text-emerald-500 font-bold">NOMINAL</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Voyager 1 (Interstellar)</span>
+              <span class="text-emerald-500 font-bold">ACTIVE</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Perseverance (Jezero)</span>
+              <span class="text-emerald-500 font-bold">SAMPLING</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Europa Clipper</span>
+              <span class="text-sky-400 font-bold">CRUISING</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-12 mt-12 border-t border-slate-200 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-slate-500">
+        <div>© 2025 EQUINOX COSMIC DAILY. ALL RIGHTS RESERVED.</div>
+        <div class="flex items-center gap-6">
+          <a class="hover:text-primary transition-colors" href="#">Privacy Protocol</a>
+          <a class="hover:text-primary transition-colors" href="#">Terms of Orbit</a>
+          <a class="hover:text-primary transition-colors" href="#">API Access</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== CLIENT LOGIC SCRIPT ==================== -->
+  <script src="script.js"></script>
+</body>
+</html>
